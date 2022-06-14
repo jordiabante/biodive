@@ -18,9 +18,10 @@ INSTALL_REQUIRES = [
       'numpy',
       'scipy',
       'sklearn',
+      'biopython',
       'matplotlib',
-      'editdistance',
-      'statsmodels'
+      'statsmodels',
+      'editdistance'
 ]
 
 setup(name=PACKAGE_NAME,
