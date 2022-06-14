@@ -1,5 +1,9 @@
 # DIVE
 
+## The algorithm
+
+DIVE is a purely statistical and completely annotation-free algorithm that proposes a new conceptual approach to discovering k-mer sequences associated with high rates of sequence diversification. DIVE is an efficient algorithm designed to identify sequences that may mechanistically cause sequence diversification (e.g., CRISPR repeat or transposon end) and the variable sequences near them, such as an insertion site. The identified sequences are assigned statistical scores for biologists to prioritize them. For more details, see [1].
+
 ## Installation
 
 ### pip
@@ -109,3 +113,7 @@ For each anchor in the set `{anchor1,anchor2,...}`, the target sequences are sto
 ```bash
     anchor | upstream/downstream | distance | target | number of instances observed
 ```
+
+## References
+
+[1] J. Abante, P.L. Wang, J. Salzman. *DIVE: a reference-free statistical approach to diversity-generating & mobile genetic element discovery*, bioarxiv (2022).
