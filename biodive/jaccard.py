@@ -38,30 +38,6 @@ def comp_js_exact(a, b):
     # Return |A int B| / |A union B|
     return len(a.intersection(b)) / len(a.union(b))
 
-# Computes approximate Jaccard similarity
-def comp_js(a, b):
-
-    """
-    Computes approximate Jaccard similarity between two k-mer skeches.
-    
-    Arguments:
-        - a: sketch of sequence A.
-        - b: sketch of sequence B.
-
-    Returns:
-        - approximate jaccard similarity
-
-    """
-
-    # TODO: implement Broder’s original formulation and merge-sorts two bottom sketches S(A) & S(B)
-
-    # Define sets
-    a_u_b = sorted(a.union(b))
-    a_u_b = set(a_u_b[0:len(a)])
-
-    # Return
-    return len(a_u_b.intersection(a).intersection(b)) / len(a_u_b)
-
 # Computes exact p-value for a given number of matches 
 def comp_pval_js_exact(x, y, sx, sy):
 
@@ -93,38 +69,6 @@ def comp_pval_js_exact(x, y, sx, sy):
 
     # Return pval
     return 1.0-hypergeom.cdf(z, m, w, s) if w>0 else 1.0
-
-# Computes approximate p-value for a given number of matches 
-def comp_pval_js(sx, sy, gx, gy, l):
-
-    """
-    Computes approximate p-value under null hypothesis that observed JS can be explained by the variability
-    in JS derived from a random distribution of k-mers. The hypergeometric distribution is approximated with
-    a binomial distribution. See Ondov et al 2016 for details.
-
-    Arguments:
-        - sx: sketch of k-mer X
-        - sy: sketch of k-mer Y
-        - gx: length of genome encoded by sketch of k-mer X
-        - gy: length of genome encoded by sketch of k-mer y
-        - l: l-mer size
-
-    Returns:
-        - p-value
-
-    """
-    
-    # TODO: can r be computed outside just once?
-
-    # Get quantities
-    s = len(sx)
-    z = len(sx.intersection(sy))
-    px = 1. - (1. - 0.25 ** l) ** gx
-    py = 1. - (1. - 0.25 ** l) ** gy
-    r = px * py / (px + py - px * py)
-
-    # Return pval
-    return 1.0-binom.cdf(z, s, r)
 
 # collapse keys based on JS
 def add_new_val_js(vals, new_val, l, jsthrsh):
