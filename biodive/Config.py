@@ -7,8 +7,8 @@ class Config:
     Class for configuration object.
     """
 
-    def __init__(self, kmer_size=31, rand_lkp=False, dist=0, outdir="./", min_smp_sz=20, max_smp_sz=50, 
-                 lmer_size=7, jsthrsh=0.05, q_thresh=0.1, batch_sz_poibin=10000, max_fastq_reads=0, annot_fasta=[]):
+    def __init__(self, kmer_size=25, rand_lkp=False, dist=0, outdir="./", min_smp_sz=20, max_smp_sz=100, 
+                 lmer_size=7, jsthrsh=0.25, q_thresh=0.05, batch_sz_poibin=10000, max_fastq_reads=0, annot_fasta=[]):
         
         self.dist = dist                                    # fixed lookup distance (only matters if rand_lkp is False)
         self.outdir = outdir                                # output directory
