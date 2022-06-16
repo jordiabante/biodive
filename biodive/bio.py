@@ -104,10 +104,10 @@ def process_fastq_record(no_new_kmers, read_seq, data_dict, config):
         ## Check flanking k-mers at distance dist
 
         # Get upstream candidate variable sequence
-        if not data_dict[ref_kmer].up_done and (i-(data_dict[ref_kmer].up_lkp_d+config.kmer_size-1))>=0:
+        if not data_dict[ref_kmer].up_done and (i-(data_dict[ref_kmer].up_lkp_d+config.kmer_size))>=0:
             
             # Get upstream sequence
-            up_kmer = read_seq[(i-(data_dict[ref_kmer].up_lkp_d+config.kmer_size-1)):(i-data_dict[ref_kmer].up_lkp_d+1)]
+            up_kmer = read_seq[(i-(data_dict[ref_kmer].up_lkp_d+config.kmer_size)):(i-data_dict[ref_kmer].up_lkp_d)]
 
             # Register variable upstream k-mer
             if checknoN(up_kmer):
@@ -125,10 +125,10 @@ def process_fastq_record(no_new_kmers, read_seq, data_dict, config):
             data_dict[ref_kmer].up_done = True if data_dict[ref_kmer].up_cnt>=config.max_smp_sz else False
 
         # Get downstream candidate variable sequence
-        if not data_dict[ref_kmer].dn_done and (i+2*config.kmer_size+data_dict[ref_kmer].dn_lkp_d-1)<=len(read_seq):
+        if not data_dict[ref_kmer].dn_done and (i+2*config.kmer_size+data_dict[ref_kmer].dn_lkp_d)<=len(read_seq):
             
             # Get downstream sequence
-            dn_kmer = read_seq[(i+config.kmer_size+data_dict[ref_kmer].dn_lkp_d-1):(i+2*config.kmer_size+data_dict[ref_kmer].dn_lkp_d-1)]
+            dn_kmer = read_seq[(i+config.kmer_size+data_dict[ref_kmer].dn_lkp_d):(i+2*config.kmer_size+data_dict[ref_kmer].dn_lkp_d)]
 
             # Register variable downstream k-mer
             if checknoN(dn_kmer):
