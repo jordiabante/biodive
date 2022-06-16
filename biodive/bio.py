@@ -200,7 +200,8 @@ def process_fastq(data_dict, min_p, n_tot, fqfile, config):
                 if not no_new_kmers:
 
                     # returns true if not worth introducing new k-mers
-                    no_new_kmers = True if 1.0-(1.0-min_p)**n_so_far>0.99 else False
+                    no_new_kmers = True if 1.0-(1.0-min_p)**n_so_far>config.no_new_min_p else False
+                        # no_new_kmers = True if 1.0-(1.0-min_p)**n_so_far>0.99 else False
                     
                     # if no new kmers anounce it and check with oracle
                     if no_new_kmers:
@@ -211,7 +212,7 @@ def process_fastq(data_dict, min_p, n_tot, fqfile, config):
                         # check with oracle and create message
                         mystats.check_w_oracle(data_dict, n_so_far, n_tot, config)
 
-            # from that point on, check with oracle every 5 million reads
+            # from that point on, check with oracle every 2.5 million reads
             if no_new_kmers and n_so_far%2500000==0:
 
                 # check with oracle and create message
