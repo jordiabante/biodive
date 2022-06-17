@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 PACKAGE_NAME = 'biodive'
 AUTHOR = 'Jordi Abante'
 AUTHOR_EMAIL = 'jordiabante@protonmail.com'
@@ -15,13 +15,13 @@ LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
-      'numpy==1.19.5',
-      'scipy==1.5.4',
-      'biopython==1.79',
-      'matplotlib==3.3.4',
-      'statsmodels==0.12.2',
-      'scikit-learn==0.24.2',
-      'editdistance==0.6.0'
+      'numpy',
+      'scipy',
+      'biopython',
+      'matplotlib',
+      'statsmodels',
+      'scikit-learn',
+      'editdistance'
 ]
 
 setup(name=PACKAGE_NAME,
