@@ -2,7 +2,7 @@
 
 ## The algorithm
 
-DIVE is a purely statistical and completely annotation-free algorithm that proposes a new conceptual approach to discovering k-mer sequences associated with high rates of sequence diversification. DIVE is an efficient algorithm designed to identify sequences that may mechanistically cause sequence diversification (e.g., CRISPR repeat or transposon end) and the variable sequences near them, such as an insertion site. The identified sequences are assigned statistical scores for biologists to prioritize them. For more details, see [1].
+DIVE is a purely statistical and completely annotation-free algorithm that proposes a new conceptual approach to discovering k-mer sequences associated with high rates of sequence diversification. DIVE is an efficient algorithm designed to identify sequences that may mechanistically cause sequence diversification (e.g., CRISPR repeat or transposon end) and the variable sequences near them, such as an insertion site. The identified sequences are assigned statistical scores for biologists to prioritize them and blasted against a series of FASTA files if desired. For more details, see [1].
 
 ## Installation
 
@@ -12,6 +12,12 @@ To install DIVE simply run the following pip command on the terminal:
 
 ```bash
 pip install biodive
+```
+
+To install blast within the same environment use the following command:
+
+```python
+conda install -c bioconda blast
 ```
 
 ### github
@@ -26,9 +32,15 @@ conda activate biodive
 pip install -e .
 ```
 
+To install blast within the same environment use the following command:
+
+```python
+conda install -c bioconda blast
+```
+
 ## Usage
 
-To run a single-sample analysis
+To run a single-sample analysis on a compressed FASTQ/FASTA file use
 
 ```python
 # import bio module
@@ -36,25 +48,20 @@ from biodive import bio
 
 # define input file and output dir
 outdir = "/path/to/outdir/"
-fqfile = "/path/to/fastq.gz"
+infile = "/path/to/fastq.gz" # or "/path/to/fasta.gz"
 
 # configure run
 config = bio.Config(
     outdir=outdir,              # directory where output files will be stored
-    kmer_size=27,               # k-mer size used in the analysis
-    min_smp_sz=5,               # minimum sample size to compute p-value
-    max_smp_sz=50,              # maximum number of sequences sampled per
-    lmer_size=7,                # l-mer size used to compute jaccard similarity between k-mers
-    jsthrsh=0.25                # jaccard similarity threshold used to collapse the observed sequences
-    max_fastq_reads=5000000,    # maximum number of FASTQ reads to process
+    kmer_size=25,               # k-mer size used in the analysis
     annot_fasta=[]              # array containing fasta files to use with blast
 )
 
 # run analysis
-bio.biodive_single_sample_analysis(fqfile,config)
+bio.biodive_single_sample_analysis(infile,config)
 ```
 
-If `len(annot_fasta)>0`, then `blast` must be available on the path.
+If `len(annot_fasta)>0`, then `blast` must be available on the path (see installation above).
 
 ## Output files
 
