@@ -8,7 +8,7 @@ class Config:
     """
 
     def __init__(self, kmer_size=25, rand_lkp=False, dist=0, outdir="./", min_smp_sz=20, max_smp_sz=100, no_new_min_p=0.90,
-                 lmer_size=7, jsthrsh=0.25, q_thresh=0.05, batch_sz_poibin=10000, max_fastq_reads=0, annot_fasta=[]):
+                 lmer_size=7, jsthrsh=0.25, q_thresh=0.01, batch_sz_poibin=10000, max_fastq_reads=0, annot_fasta=[]):
         
         self.dist = dist                                    # fixed lookup distance (only matters if rand_lkp is False)
         self.outdir = outdir                                # output directory
@@ -23,6 +23,7 @@ class Config:
         self.no_new_min_p = no_new_min_p                    # minimum prob that we will have observed at least 1 instance by now
         self.batch_sz_poibin = batch_sz_poibin              # batch size for Poisson binomial model
         self.max_fastq_reads = max_fastq_reads              # maximum number of fastq records to be processed (all if 0)
+        self.__filetype___ = ""                             # input file type
 
     def report(self):
 

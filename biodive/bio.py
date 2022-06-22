@@ -57,6 +57,28 @@ def count_nreads_fastq(fqfile):
     # Return total
     return tot_reads
 
+# counts number of reads in a fastq file
+def count_nreads_fasta(fafile):
+
+    """
+    Count total number of records in FASTA file.
+    """
+
+    io.print_mess("Counting total number of reads...")
+
+    # Count reads
+    tot_lines = tot_reads = 0
+    with gzip.open(fafile, "rt") as handle:
+        for _ in handle:
+            tot_lines += 1
+            if (tot_lines%2)==1:
+                tot_reads += 1
+
+    io.print_mess("Found " + str(tot_reads) + " reads...")
+
+    # Return total
+    return tot_reads
+
 # processes a single fastq read or record
 def process_fastq_record(no_new_kmers, read_seq, data_dict, config):
 
@@ -152,7 +174,7 @@ def process_fastq_record(no_new_kmers, read_seq, data_dict, config):
     return new_entries
 
 # processes a fastq file
-def process_fastq(data_dict, min_p, n_tot, fqfile, config):
+def process_fastq(data_dict, min_p, n_tot, infile, config):
 
     io.print_mess("Generating anchor k-mer dictionary...")
 
@@ -164,15 +186,21 @@ def process_fastq(data_dict, min_p, n_tot, fqfile, config):
     no_new_kmers = False
 
     # parse fastq file
-    with gzip.open(fqfile, "rt") as handle:
+    with gzip.open(infile, "rt") as handle:
 
         # parse read
         for read_seq in handle:
 
             # check we're in sequence line (remainder of 2)
             total_lines += 1
-            if total_lines%4!=2:
-                continue
+            if config.__filetype__=="FASTQ":
+                if total_lines%4!=2:
+                    continue
+            elif config.__filetype__=="FASTA":
+                if total_lines%2!=0:
+                    continue
+            else:
+                return 0
 
             # increase counter
             n_so_far += 1
@@ -362,6 +390,7 @@ def annot_all(stats_file, kmer_fa, config, evalue=1):
         else:
 
             io.print_mess(f"Could not find annotation FASTA: {fa}")
+            io.print_mess(f"WARNING: data columns will be shifted.")
 
 # get output prefix
 def get_out_pref(fqfile, config):
@@ -370,11 +399,13 @@ def get_out_pref(fqfile, config):
     Obtains output prefix and creates output directory if necessary.
     """
 
+    # create output dir if it doesn't exist
     if not path.exists(config.outdir):
         io.print_mess(f"Creating output directory: {config.outdir}")
         makedirs(config.outdir, exist_ok = True)
     
-    return config.outdir + "/" + path.basename(fqfile).split('.fastq')[0]
+    # this works well for both fastq and fasta
+    return config.outdir + "/" + path.basename(fqfile).split('.fa')[0]
 
 # adds header to output file
 def dmgfinder_header(infile, fastas):
@@ -431,15 +462,23 @@ def dmgfinder_header(infile, fastas):
     move(tmpfile, infile)
 
 # performs a single-sample analysis on fastq file
-def biodive_single_sample_analysis(fqfile, config=Config()):
+def biodive_single_sample_analysis(infile, config=Config()):
 
     """
-    Performs a single-sample analysis on `fqfile` file.
+    Performs a single-sample analysis on `infile` file.
     """
 
     # print name of file
     io.print_mess(f"*********************** INPUT ***********************")
-    io.print_mess(f"FASTQ file: {fqfile}")
+    if infile.endswith('.fastq.gz') or infile.endswith('.fq.gz'):
+        io.print_mess(f"FASTQ file: {infile}")
+        config.__filetype__ = "FASTQ"
+    elif infile.endswith('.fasta.gz') or infile.endswith('.fa.gz'):
+        io.print_mess(f"FASTA file: {infile}")
+        config.__filetype__ = "FASTA"
+    else:
+        io.print_mess(f"Input format not recognized. DIVE takes a compressed FASTA or FASTQ file.")
+        return False
     
     # report configuration to logfile
     config.report()
@@ -448,22 +487,23 @@ def biodive_single_sample_analysis(fqfile, config=Config()):
     data_dict = {}
 
     # get output prefix
-    outprefix = get_out_pref(fqfile, config)
+    outprefix = get_out_pref(infile, config)
     
-    # count total number of reads
-    n_tot = count_nreads_fastq(fqfile)
+    # count total number of reads.
+    n_tot = count_nreads_fastq(infile) if config.__filetype__=="FASTQ" else count_nreads_fasta(infile) 
 
     # get minimum p of success for which we expect to see the min sample size allowed
     min_p = config.min_smp_sz/n_tot
     io.print_mess("Minimum success probability is " + str(min_p) + "...")
 
     # generate dictionary of k-mers
-    process_fastq(data_dict, min_p, n_tot, fqfile, config)
+    process_fastq(data_dict, min_p, n_tot, infile, config)
 
     # run poisson testing
     test_success = mystats.poibin_test(data_dict, config)
     if not test_success:
         io.print_mess("biodive finished without positives")
+        return False
 
     # store target sequences
     io.write_target_seqs(data_dict, outprefix + "_targets.txt.gz")

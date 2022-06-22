@@ -26,16 +26,23 @@ bio.count_nreads_fastq(fastqfile)
 
 # Pre-process FASTQ file
 from biodive import bio
-fqfile = "./test_data/test_data.fastq.gz"
+infile = "./test_data/test_data.fastq.gz"
 config = bio.Config(outdir="./test_data/out/", kmer_size=35, min_smp_sz=10, max_smp_sz=50, lmer_size=7, jsthrsh=0.25)
-bio.biodive_single_sample_analysis(fqfile,config)
+bio.biodive_single_sample_analysis(infile,config)
 
 # Pre-process FASTQ file (with annotation)
 from biodive import bio
-fqfile = "./test_data/test_data.fastq.gz"
+infile = "./test_data/test_data.fastq.gz"
 annot_fasta = ["./test_data/test_annot.fa"]
 config = bio.Config(outdir="./test_data/out/", kmer_size=35, min_smp_sz=10, max_smp_sz=50, lmer_size=7, jsthrsh=0.25, annot_fasta=annot_fasta)
-bio.biodive_single_sample_analysis(fqfile,config)
+bio.biodive_single_sample_analysis(infile,config)
+
+# Pre-process FASTA file (with annotation)
+from biodive import bio
+infile = "./test_data/test_data.fa.gz"
+annot_fasta = ["./test_data/test_annot.fa"]
+config = bio.Config(outdir="./test_data/out/", kmer_size=35, min_smp_sz=10, max_smp_sz=50, lmer_size=7, jsthrsh=0.25, annot_fasta=annot_fasta)
+bio.biodive_single_sample_analysis(infile,config)
 
 # add annotation to processed file
 from biodive import bio
