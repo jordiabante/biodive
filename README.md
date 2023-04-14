@@ -79,9 +79,9 @@ where `up/dn` indicate the position of the HVR with respect to the anchor and:
 * `max_n_*`: corresponding number of target sequences observed.
 * `max_efct_sz_*`: corresponding effect size.
 * `max_efct_sz_qval_*`: corresponding adjusted p-value.
-* `max_kmer_*`: corresponding k-mer sequence.
+* `max_kmer_*`: anchor sequence in the `*` direction.
 
-If the `len(annot_fasta)>0`, then two extra columns will be added to the previous table, for each direction (upstream, downstream) and for each FASTA in `annot_fasta`, containing the lowest e-value and the corresponding hit in the FASTA (sequence in FASTA resulting in lowest e-value), and the output will be stored in a new table with suffix `_anchors_annot.txt.gz` (NA will be assigned when e-value>1). For example, if we pass `annot_fasta=[fasta1]` we will see four extra columns:
+If the `len(annot_fasta)>0`, then two extra columns will be added to the previous table containing annotation information for the anchor sequence that maximizes the effect size upstream and downstream, respectively (max_kmer_up and max_kmer_down). For each direction (upstream, downstream) and for each FASTA in `annot_fasta`, containing the lowest e-value and the corresponding hit in the FASTA (sequence in FASTA resulting in lowest e-value), and the output will be stored in a new table with suffix `_anchors_annot.txt.gz` (NA will be assigned when e-value>1). For example, if we pass `annot_fasta=[fasta1]` we will see four extra columns:
 
 ```bash
     sequence id | ... | {anchor1,anchor2,...} | best_eval_up_fasta1 | best_hit_up_fasta1 | best_eval_dn_fasta1 | best_hit_dn_fasta1 
